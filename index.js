@@ -48,6 +48,8 @@ expressServer.use("/api/hashtag", hashtagRouter);
 expressServer.use("/api/notification", notificationRouter);
 expressServer.use("/pusher", pusherRouter);
 
+console.log(Server);
+
 expressServer.listen(Server.port, () => {
 
   pusher.trigger("my-channel", "my-event", {
