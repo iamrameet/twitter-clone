@@ -70,7 +70,9 @@ class UserService{
       CAST(COUNT(DISTINCT tweets.*) AS INTEGER) AS tweet_count,
       CAST(COUNT(DISTINCT followers.*) AS INTEGER) AS follower_count,
       CAST(COUNT(DISTINCT following.*) AS INTEGER) AS following_count,
-      CAST(COUNT(DISTINCT notifications.*) AS INTEGER) AS notification_count
+      CAST(
+        (SELECT COUNT(notifications.*) FROM notifications WHERE notifications.user_id = users.id
+      ) AS INTEGER) AS notification_count
       ${
         options?.userId ?
           `, (SELECT count(*) = 1

@@ -14,7 +14,7 @@ import Logger from "./utility/logger.js";
 import pusher from "./pusher/index.js";
 import pusherRouter from "./server/routes/pusher.js";
 
-Logger.level = Logger.Level.ALL;
+Logger.level = Logger.Level.NONE;
 
 globalThis.SERVER = {
   dateTime: new DateTime(1681560095416)
