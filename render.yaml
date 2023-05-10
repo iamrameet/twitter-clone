@@ -1,0 +1,3 @@
+buildCommand: |
+  mkdir -p data/files
+  mkdir -p data/logs
