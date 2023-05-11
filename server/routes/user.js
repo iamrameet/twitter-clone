@@ -30,6 +30,7 @@ userRouter.put("/update", imageHandler.fields([
 ]), userAuth, userController.put["/update"]);
 userRouter.put("/:field", userAuth, userController.put["/:field"]);
 
+userRouter.delete("/logout", userAuth, userController.delete["/logout"]);
 userRouter.delete("/:userId/unfollow", userAuth, userController.delete["/:userId/unfollow"]);
 
 export default userRouter;

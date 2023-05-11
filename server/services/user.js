@@ -254,7 +254,6 @@ class UserService{
   */
   static async updateFields(id, fields){
     const fieldNames = Object.keys(fields).filter(name => name !== "id" && fields[name]);
-    console.log(fields);
     const query = `UPDATE users SET ${
       fieldNames.map((name, index) => `${ name }=$${ index + 2 }`).join(", ")
     } WHERE id=$1 RETURNING ${ fieldNames.join(", ") };`;

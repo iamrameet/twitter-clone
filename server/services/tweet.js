@@ -110,12 +110,14 @@ class TweetService {
         (retweets_and_tweets.retweet_of_id IS DISTINCT FROM NULL) AS is_retweeted,
         users.name,
         users.username,
+        users.image,
         RefTweets.id as ref_id,
         RefTweets.content as ref_content,
         RefTweets.created_at as ref_created_at,
         RefTweetUsers.id as ref_user_id,
         RefTweetUsers.name AS ref_user_name,
         RefTweetUsers.username AS ref_user_username,
+        RefTweetUsers.image AS ref_user_image,
         (SELECT COUNT(*) FROM likes WHERE user_id = $1 AND retweets_and_tweets.id = tweet_id) > 0 AS is_liked,
         CAST(COUNT(DISTINCT likes.tweet_id) AS INTEGER) AS likes,
         CAST(COUNT(DISTINCT T.*) AS INTEGER) AS replies,
@@ -225,12 +227,14 @@ class TweetService {
         retweets_and_tweets.retweet_of_id,
         users.name,
         users.username,
+        users.image,
         RefTweets.id as ref_id,
         RefTweets.content as ref_content,
         RefTweets.created_at as ref_created_at,
         RefTweetUsers.id as ref_user_id,
         RefTweetUsers.name AS ref_user_name,
         RefTweetUsers.username AS ref_user_username,
+        RefTweetUsers.image AS ref_user_image,
         COALESCE(
           (SELECT json_agg(attachments.*)
           FROM attachments
@@ -288,12 +292,14 @@ class TweetService {
         retweets_and_tweets.retweet_of_id,
         users.name,
         users.username,
+        users.image,
         RefTweets.id as ref_id,
         RefTweets.content as ref_content,
         RefTweets.created_at as ref_created_at,
         RefTweetUsers.id as ref_user_id,
         RefTweetUsers.name AS ref_user_name,
         RefTweetUsers.username AS ref_user_username,
+        RefTweetUsers.image AS ref_user_image,
         COALESCE(
           (SELECT json_agg(attachments.*)
           FROM attachments
@@ -344,12 +350,14 @@ class TweetService {
         retweets_and_tweets.retweet_of_id,
         users.name,
         users.username,
+        users.image,
         RefTweets.id as ref_id,
         RefTweets.content as ref_content,
         RefTweets.created_at as ref_created_at,
         RefTweetUsers.id as ref_user_id,
         RefTweetUsers.name AS ref_user_name,
         RefTweetUsers.username AS ref_user_username,
+        RefTweetUsers.image AS ref_user_image,
         COALESCE(
           (SELECT json_agg(attachments.*)
           FROM attachments

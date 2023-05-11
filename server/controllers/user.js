@@ -91,8 +91,8 @@ const userController = Controller.handleWithJSON("USER", {
       const token = await JWT.create({ id: userData.id });
       response.cookie("auth-token", token, {
         httpOnly: true,
-        secure: false,
-        sameSite: "none"
+        sameSite: "none",
+        secure: true
       });
       return { userData, token };
     },
@@ -141,7 +141,7 @@ const userController = Controller.handleWithJSON("USER", {
       console.log({image, cover})
 
       return UserService.updateFields(id, {
-        name, bio, location, website, image: image, cover: cover
+        name, bio, location, website, image, cover
       });
     }
 
@@ -149,6 +149,14 @@ const userController = Controller.handleWithJSON("USER", {
 
   delete: {
 
+    async "/logout"({ response }){
+      response.clearCookie("auth-token", {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true
+      });
+      return { loggedOut: true };
+    },
     async "/:userId/unfollow"({ request, response }){
       const { id = null } = response.locals.tokenData;
       const { userId } = request.params;
