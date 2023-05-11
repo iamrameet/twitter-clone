@@ -16,7 +16,7 @@ const imageHandler = multer({
       return void callback("File type must be jpeg/jpg");
     callback(null, true);
   }
-}).single("image");
+});
 
 const attachmentsHandler = multer({
   storage,

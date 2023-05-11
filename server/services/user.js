@@ -13,8 +13,12 @@ class User{
    * @param {string} password
    * @param {number} createdAt
    * @param {string} image
+   * @param {string} cover
+   * @param {string} bio
+   * @param {string} location
+   * @param {string} website
   */
-  constructor(id, username, name, email, dob, password, createdAt, image){
+  constructor(id, username, name, email, dob, password, createdAt, image = null, cover = null, bio = "", location = "", website = ""){
     this.id = id;
     this.username = username;
     this.name = name;
@@ -23,6 +27,10 @@ class User{
     this.password = password;
     this.createdAt = createdAt;
     this.image = image;
+    this.cover = cover;
+    this.bio = bio;
+    this.location = location;
+    this.website = website;
     this.tweetCount = 0;
     this.followerCount = 0;
     this.followingCount = 0;
@@ -41,9 +49,13 @@ class User{
       object.dob,
       object.password,
       object.created_at,
-      object.image
+      object.image,
+      object.cover,
+      object.bio,
+      object.location,
+      object.website
     );
-    console.log(object);
+    // console.log(object);
     instance.followerCount = object.follower_count;
     instance.followingCount = object.following_count;
     instance.tweetCount = object.tweet_count;
@@ -67,6 +79,11 @@ class UserService{
       users.username,
       users.created_at,
       users.password,
+      users.image,
+      users.cover,
+      users.bio,
+      users.location,
+      users.website,
       CAST(COUNT(DISTINCT tweets.*) AS INTEGER) AS tweet_count,
       CAST(COUNT(DISTINCT followers.*) AS INTEGER) AS follower_count,
       CAST(COUNT(DISTINCT following.*) AS INTEGER) AS following_count,
@@ -126,7 +143,7 @@ class UserService{
 
   /** @param {string} q */
   static async getSuggestions(q){
-    const query = "SELECT name, username, id, image FROM users WHERE username LIKE $1;";
+    const query = "SELECT name, username, id, image, cover, bio, location, website FROM users WHERE username LIKE $1;";
     const result = await this.#pool.tryQuery("Unable to get users", query, [ `%${q}%` ]);
     return result.rows;
   }
@@ -137,7 +154,14 @@ class UserService{
   */
   static async search(q, userId){
     const query = `SELECT DISTINCT ON (users.id)
-        users.name, users.username, users.id, users.image,
+        users.name,
+        users.username,
+        users.id,
+        users.image,
+        users.cover,
+        users.bio,
+        users.location,
+        users.website,
         tweets.content AS recent_tweet_content,
         ${
           userId ? `(SELECT id FROM followers WHERE user_id = users.id AND follower_id = $2) IS DISTINCT FROM NULL as is_following` : "FALSE AS is_following"
@@ -221,6 +245,27 @@ class UserService{
       default:
         throw `invalid field '${field}'`;
     }
+  }
+
+  /**
+   * @param {User["id"]} id
+   * @param {Partial<User>} fields
+   * @param {User[T]} value
+  */
+  static async updateFields(id, fields){
+    const fieldNames = Object.keys(fields).filter(name => name !== "id" && fields[name]);
+    console.log(fields);
+    const query = `UPDATE users SET ${
+      fieldNames.map((name, index) => `${ name }=$${ index + 2 }`).join(", ")
+    } WHERE id=$1 RETURNING ${ fieldNames.join(", ") };`;
+    const result = await this.#pool.tryQuery(
+      `Unable to update user data`,
+      query, [ id, ...fieldNames.map(name => fields[name]) ]
+    );
+    if(result.rowCount === 0){
+      throw "User not found";
+    }
+    return result.rows[0];
   }
 
   /**

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import userController from "../controllers/user.js";
 import userAuth, { tryUserAuth } from "../../middlewares/auth.js";
+import { imageHandler } from "../../middlewares/multer.js";
 
 const userRouter = Router();
 
@@ -23,6 +24,10 @@ userRouter.post("/", userController.post["/"]);
 userRouter.post("/auth", userController.post["/auth"]);
 userRouter.post("/:userId/follow", userAuth, userController.post["/:userId/follow"]);
 
+userRouter.put("/update", imageHandler.fields([
+  { name: "image", maxCount: 1 },
+  { name: "cover", maxCount: 1 }
+]), userAuth, userController.put["/update"]);
 userRouter.put("/:field", userAuth, userController.put["/:field"]);
 
 userRouter.delete("/:userId/unfollow", userAuth, userController.delete["/:userId/unfollow"]);

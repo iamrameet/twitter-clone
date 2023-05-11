@@ -125,11 +125,24 @@ const userController = Controller.handleWithJSON("USER", {
 
   put: {
 
-    async "/:field"({ request }){
-      const { userId } = response.locals.tokenData;
+    async "/:field"({ request, response }){
+      const { id } = response.locals.tokenData;
       const { field } = request.params;
       const { value = "" } = request.body;
       return UserService.updateField(userId, field, value);
+    },
+
+    async "/update"({ request, response }){
+      const { id } = response.locals.tokenData;
+      const image = request.files.image?.[0].path;
+      const cover = request.files.cover?.[0].path;
+      const { name, bio, location, website } = request.body;
+
+      console.log({image, cover})
+
+      return UserService.updateFields(id, {
+        name, bio, location, website, image: image, cover: cover
+      });
     }
 
   },
